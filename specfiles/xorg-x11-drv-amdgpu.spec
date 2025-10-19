@@ -15,7 +15,7 @@ License:    MIT
 URL:        https://gitlab.freedesktop.org/xorg/driver/xf86-video-amdgpu
 Source:     https://www.x.org/archive/individual/driver/%{tarball}-%{version}.tar.xz
 # add ps4linux support
-Patch1:		https://raw.githubusercontent.com/dangbroitsdon/copr-ps4linux/patches/%{name}/%{name}-ps4linux-support.patch
+Patch1:		https://raw.githubusercontent.com/dangbroitsdon/copr-ps4linux/refs/heads/main/patches/%{name}/%{name}-ps4linux-support.patch
 
 ExcludeArch: s390 s390x
 

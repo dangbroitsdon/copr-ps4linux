@@ -81,7 +81,7 @@ Patch1001:      https://src.fedoraproject.org/rpms/%{name}/raw/rawhide/f/%{name}
 # remove backwards compat not needed on Fedora
 Patch1002:      https://src.fedoraproject.org/rpms/%{name}/raw/rawhide/f/%{name}-2.4.0-no-bc.patch
 # add ps4linux support
-Patch1003:      https://raw.githubusercontent.com/dangbroitsdon/copr-ps4linux/patches/%{name}/%{name}-ps4linux-support.patch
+Patch1003:      https://raw.githubusercontent.com/dangbroitsdon/copr-ps4linux/refs/heads/main/patches/%{name}/%{name}-ps4linux-support.patch
 
 %description
 Direct Rendering Manager runtime library
