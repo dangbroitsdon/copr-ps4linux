@@ -44,11 +44,11 @@ end}
 %bcond_without install_test_programs
 %bcond_without udev
 
-%global         lib_version 127
+%global         lib_version 129
 
 Name:           libdrm
 Summary:        Direct Rendering Manager runtime library
-Version:        2.4.127
+Version:        2.4.129
 Release:        1%{?dist}
 License:        MIT
 
