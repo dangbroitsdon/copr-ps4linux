@@ -18,7 +18,6 @@ BuildRequires:  systemd-devel
 # SRPMs for each arch still have the same build dependencies. See:
 # https://bugzilla.redhat.com/show_bug.cgi?id=1859515
 BuildRequires:  pkgconfig(libdrm) >= 2.4.122
-BuildRequires:  pkgconfig(libunwind)
 BuildRequires:  pkgconfig(expat)
 BuildRequires:  pkgconfig(zlib) >= 1.2.3
 BuildRequires:  pkgconfig(libzstd)
@@ -47,7 +46,6 @@ BuildRequires:  pkgconfig(xcb-randr)
 BuildRequires:  pkgconfig(xrandr) >= 1.3
 BuildRequires:  bison
 BuildRequires:  flex
-BuildRequires:  lm_sensors-devel
 BuildRequires:  pkgconfig(libva) >= 0.38.0
 BuildRequires:  pkgconfig(libelf)
 BuildRequires:  pkgconfig(libglvnd) >= 1.3.2
@@ -59,13 +57,6 @@ BuildRequires:  python3-pyyaml
 BuildRequires:  vulkan-headers
 BuildRequires:  glslang
 BuildRequires:  pkgconfig(vulkan)
-BuildRequires:  pkgconfig(libdisplay-info)
-BuildRequires:  pkgconfig(SPIRV-Tools)
-BuildRequires:  pkgconfig(LLVMSPIRVLib)
-BuildRequires:  cmake
-
-# add ps4linux support
-Patch1:         https://raw.githubusercontent.com/dangbroitsdon/copr-ps4linux/refs/heads/main/patches/%{name}/%{name}-ps4linux-support.patch
 
 %description
 %{summary}.
@@ -171,14 +162,15 @@ Obsoletes:      mesa-vulkan-devel < %{?epoch:%{epoch}:}%{version}-%{release}
 The drivers with support for the Vulkan API.
 
 %prep
-%autosetup -p1 -n %{name}-%{version}
+%autosetup -n %{name}-%{version}
 
 %build
 %define _lto_cflags %{nil}
 
 %meson \
   -Dplatforms=x11,wayland \
-  -Dgallium-drivers=llvmpipe,virgl,radeonsi,zink \
+  -Dgallium-drivers=radeonsi,virgl,llvmpipe \
+  -Damdgpu-virtio=true \
   -Dgallium-va=enabled \
   -Dgallium-mediafoundation=disabled \
   -Dteflon=false \
@@ -198,9 +190,11 @@ The drivers with support for the Vulkan API.
   -Dshared-llvm=enabled \
   -Dvalgrind=disabled \
   -Dbuild-tests=false \
-  -Dlibunwind=enabled \
-  -Dlmsensors=enabled \
+  -Dlibunwind=disabled \
+  -Dlmsensors=disabled \
   -Dandroid-libbacktrace=disabled \
+  -Dspirv-tools=disabled \
+  -Ddisplay-info=disabled \
 %ifarch %{ix86}
   -Dglx-read-only-text=true \
 %endif
@@ -262,11 +256,10 @@ popd
 %{_libdir}/libgallium-*.so
 %{_libdir}/gbm/dri_gbm.so
 %{_libdir}/dri/kms_swrast_dri.so
-%{_libdir}/dri/libdril_dri.so
 %{_libdir}/dri/swrast_dri.so
 %{_libdir}/dri/virtio_gpu_dri.so
+%{_libdir}/dri/libdril_dri.so
 %{_libdir}/dri/radeonsi_dri.so
-%{_libdir}/dri/zink_dri.so
 
 %files va-drivers
 %{_libdir}/dri/radeonsi_drv_video.so
