@@ -2,15 +2,13 @@
 
 Name:           mesa
 Summary:        Mesa graphics libraries
-Version:        25.2.6
+Version:        25.3.0
 Release:        1%{?dist}
 License:        MIT AND BSD-3-Clause AND SGI-B-2.0
 URL:            https://gitlab.freedesktop.org/mesa/mesa
 Source0:        https://archive.mesa3d.org/mesa-%{version}.tar.xz
-# add ps4linux support
-Patch1:         https://raw.githubusercontent.com/dangbroitsdon/copr-ps4linux/refs/heads/main/patches/%{name}/%{name}-ps4linux-support.patch
 
-BuildRequires:  meson >= 1.3.0	
+BuildRequires:  meson >= 1.3.0
 BuildRequires:  gcc
 BuildRequires:  gcc-c++
 BuildRequires:  gettext
@@ -50,7 +48,6 @@ BuildRequires:  pkgconfig(xrandr) >= 1.3
 BuildRequires:  bison
 BuildRequires:  flex
 BuildRequires:  lm_sensors-devel
-BuildRequires:  pkgconfig(vdpau) >= 1.1
 BuildRequires:  pkgconfig(libva) >= 0.38.0
 BuildRequires:  pkgconfig(libelf)
 BuildRequires:  pkgconfig(libglvnd) >= 1.3.2
@@ -62,6 +59,13 @@ BuildRequires:  python3-pyyaml
 BuildRequires:  vulkan-headers
 BuildRequires:  glslang
 BuildRequires:  pkgconfig(vulkan)
+BuildRequires:  pkgconfig(libdisplay-info)
+BuildRequires:  pkgconfig(SPIRV-Tools)
+BuildRequires:  pkgconfig(LLVMSPIRVLib)
+BuildRequires:  cmake
+
+# add ps4linux support
+Patch1:         https://raw.githubusercontent.com/dangbroitsdon/copr-ps4linux/refs/heads/main/patches/%{name}/%{name}-ps4linux-support.patch
 
 %description
 %{summary}.
@@ -72,7 +76,6 @@ Provides:       mesa-dri-filesystem = %{?epoch:%{epoch}:}%{version}-%{release}
 Obsoletes:      mesa-omx-drivers < %{?epoch:%{epoch}:}%{version}-%{release}
 Obsoletes:      mesa-libd3d < %{?epoch:%{epoch}:}%{version}-%{release}
 Obsoletes:      mesa-libd3d-devel < %{?epoch:%{epoch}:}%{version}-%{release}
-Obsoletes:      mesa-vdpau-drivers < %{?epoch:%{epoch}:}%{version}-%{release}
 
 %description filesystem
 %{summary}.
@@ -136,13 +139,6 @@ Obsoletes:      %{name}-vaapi-drivers < 22.2.0-5
 %description va-drivers
 %{summary}.
 
-%package        vdpau-drivers
-Summary:        Mesa-based VDPAU drivers
-Requires:       %{name}-filesystem%{?_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
-
-%description vdpau-drivers
-%{summary}.
-
 %package libgbm
 Summary:        Mesa gbm runtime library
 Provides:       libgbm
@@ -183,7 +179,6 @@ The drivers with support for the Vulkan API.
 %meson \
   -Dplatforms=x11,wayland \
   -Dgallium-drivers=llvmpipe,virgl,radeonsi,zink \
-  -Dgallium-vdpau=enabled \
   -Dgallium-va=enabled \
   -Dgallium-mediafoundation=disabled \
   -Dteflon=false \
@@ -214,9 +209,6 @@ The drivers with support for the Vulkan API.
 
 %install
 %meson_install
-
-# libvdpau opens the versioned name, don't bother including the unversioned
-rm -vf %{buildroot}%{_libdir}/vdpau/*.so
 
 # likewise glvnd
 rm -vf %{buildroot}%{_libdir}/libGLX_mesa.so
@@ -279,11 +271,6 @@ popd
 %files va-drivers
 %{_libdir}/dri/radeonsi_drv_video.so
 %{_libdir}/dri/virtio_gpu_drv_video.so
-
-%files vdpau-drivers
-%dir %{_libdir}/vdpau
-%{_libdir}/vdpau/libvdpau_radeonsi.so.1*
-%{_libdir}/vdpau/libvdpau_virtio_gpu.so.1*
 
 %files vulkan-drivers
 %{_libdir}/libvulkan_lvp.so
