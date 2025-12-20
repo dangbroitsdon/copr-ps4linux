@@ -2,7 +2,7 @@
 
 Name:           mesa
 Summary:        Mesa graphics libraries
-Version:        25.3.1
+Version:        25.3.2
 Release:        1%{?dist}
 License:        MIT AND BSD-3-Clause AND SGI-B-2.0
 URL:            https://gitlab.freedesktop.org/mesa/mesa
